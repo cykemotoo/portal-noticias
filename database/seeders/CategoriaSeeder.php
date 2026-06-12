@@ -16,17 +16,26 @@ class CategoriaSeeder extends Seeder
         
            DB::table('categorias')->insert([
               [
-               "nome" => "Programação",
-               "cor"  => "#3B82F6"
+                 "nome" => "Programação",
+                 "cor"  => "#3B82F6"
               ],
               [
-               "nome" => "Inteligência Artificial",
-               "cor"  => "#8B"
+                 "nome" => "Inteligência Artificial",
+                 "cor"  => "#8B5CF6"
               ],
               [
-               "nome" => "Programação",
-               "cor"  => "#3B82F6"
-              ]
+                 "nome" => "Hardware",
+                 "cor"  => "#10B981"
+              ],
+              [ 
+                 "nome" => "Cloud Computing",
+                 "cor"  => "#F59F0B"
+              ],
+              [
+                 "nome" => "Cybersegurança",
+                 "cor"  => "#EF4444"
+              ],
+              
            ]);
 
 
