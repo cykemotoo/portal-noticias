@@ -1,9 +1,9 @@
 <?php
- 
+
 namespace App\Http\Controllers;
- 
+
 use Illuminate\Http\Request;
- 
+
 class HomeController extends Controller
 {
     public function home()
@@ -15,8 +15,9 @@ class HomeController extends Controller
     {
         return view('visualizar-noticias');
     }
+
+    public function contato()
+    {
+        return view('contato');
+    }
 }
-
-
- 
- 
