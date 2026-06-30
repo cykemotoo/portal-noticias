@@ -3,44 +3,83 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Categoria;
+use App\Models\Noticia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NoticiaController extends Controller
 {
     /**
-     * Lista as Notícias do banco
+     * Lista de noticia do banco
      */
     public function index()
     {
-        return view('admin.noticias.index');
+        $noticias = Noticia::all();
+        return view('admin.noticias.index', [
+            'noticias' => $noticias
+        ]);
     }
 
     /**
-     * Chamar a view do cadastrar notícias
+     * Chamar a view do cadastrar noticia
      */
     public function create()
     {
-        //
+        $categorias = Categoria::orderBy('nome', 'ASC')->pluck('nome', 'id');
+        return view("admin.noticias.cadastrar", [
+            'categorias' => $categorias
+        ]);
     }
 
     /**
-     * Armazenar os Dados da noticias, enviado pelo formúlario
+     * Armazenar dados.
      */
     public function store(Request $request)
     {
-        //
+        dd($request);
+
+        $request->validade([
+             'categoria_id' => 'required',
+             'titulo' => 'required|min:10|max:255',
+             'resumo' => 'require',
+             'conteudo' => 'required',
+             'imagem' => 'required|image|mimes:jpge,jpg,png,webp|max:2048'
+        ]);
+
+        $noticia = new Noticia();
+        
+        $noticia->titulo = $request->titulo;
+        $noticia->resumo = $request->resumo;
+        $noticia->conteudo = $request->titulo;
+        $noticia->categoria_id = $request->titulo;
+        $noticia->ativo = $request->titulo;
+        $noticia->usuario_id = Auth::user()->id;
+
+        if($request->hasFile('imagem')){
+            $noticia->imagem = $request->file('imagem')->store('noticias', 'public');
+        }
+
+        $noticia->save();
+
+        return redirect()->route('admin.noticias.index');
+
     }
 
     /**
-     * Chamar a view do editar notícias
+     * Visualizar uma noticia
+     */
+
+    /**
+     * Chamar a view do editar noticias
      */
     public function edit(string $id)
     {
-        //
+        return view("admin.noticias.editar");
     }
 
     /**
-     * Armazemar a atualização dos bancos da notícia
+     * Armazenar a atualizacao dos dados da noticia
      */
     public function update(Request $request, string $id)
     {
@@ -48,10 +87,10 @@ class NoticiaController extends Controller
     }
 
     /**
-     * Excluir uma notícia do banco de dados
+     * excluir uma noticia de banco de dados.
      */
     public function destroy(string $id)
     {
-        //
+        return "Funcionou . . Deletou o registro!";
     }
 }
