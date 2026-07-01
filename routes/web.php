@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/categorias', [CategoriaController::class, 'index'])->name('admin.categorias.index');
     Route::get('/dashboard/categorias/cadastrar', [CategoriaController::class, 'create'])->name('admin.categorias.cadastrar');
     Route::get('/dashboard/categorias/editar/{id}', [CategoriaController::class, 'edit'])->name('admin.categorias.editar');
+    Route::get('/dashboard/categorias/atualizar/{id}', [CategoriaController::class, 'update'])->name('admin.categorias.atualizar');
     Route::delete('/dashboard/categorias/excluir/{id}', [CategoriaController::class, 'destroy'])->name('admin.categorias.excluir');
 });
  

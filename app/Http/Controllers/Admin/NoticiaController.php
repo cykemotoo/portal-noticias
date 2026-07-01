@@ -7,6 +7,7 @@ use App\Models\Categoria;
 use App\Models\Noticia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class NoticiaController extends Controller
 {
@@ -28,7 +29,8 @@ class NoticiaController extends Controller
     {
         $categorias = Categoria::orderBy('nome', 'ASC')->pluck('nome', 'id');
         return view("admin.noticias.cadastrar", [
-            'categorias' => $categorias
+            'categorias' => $categorias,
+            'noticia' => new Noticia()
         ]);
     }
 
@@ -75,7 +77,14 @@ class NoticiaController extends Controller
      */
     public function edit(string $id)
     {
-        return view("admin.noticias.editar");
+        $categorias = Categoria::orderBy('nome', 'ASC')->pluck('nome', 'id');
+
+        $noticia = Noticia::findOrFall($id);
+
+        return view("admin.noticias.editar",[
+            'categorias' => $categorias,
+            'noticia' => $noticia
+        ]);
     }
 
     /**
@@ -83,7 +92,35 @@ class NoticiaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validade([
+             'categoria_id' => 'required',
+             'titulo' => 'required|min:10|max:255',
+             'resumo' => 'require',
+             'conteudo' => 'required',
+             'imagem' => 'nullable|image|mimes:jpge,jpg,png,webp|max:2048'
+        ]);
+
+        $noticia = Noticia::findOrFall($id);
+        
+        $noticia->titulo = $request->titulo;
+        $noticia->resumo = $request->resumo;
+        $noticia->conteudo = $request->titulo;
+        $noticia->categoria_id = $request->titulo;
+        $noticia->ativo = $request->titulo;
+        $noticia->usuario_id = Auth::user()->id;
+
+        if($request->hasFile('imagem')){
+           if($noticia->imagem){
+                Storage::disk('public')->delete($noticia->imagem);
+           }
+
+            $noticia->imagem = $request->file('imagem')->store('noticias', 'public');
+        }
+
+        $noticia->save();
+
+        return redirect()->route('admin.noticias.index');
+
     }
 
     /**
