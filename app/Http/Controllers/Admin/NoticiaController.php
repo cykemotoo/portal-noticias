@@ -42,15 +42,15 @@ class NoticiaController extends Controller
         dd($request);
 
         $request->validade([
-             'categoria_id' => 'required',
-             'titulo' => 'required|min:10|max:255',
-             'resumo' => 'require',
-             'conteudo' => 'required',
-             'imagem' => 'required|image|mimes:jpge,jpg,png,webp|max:2048'
+            'categoria_id' => 'required',
+            'titulo' => 'required|min:10|max:255',
+            'resumo' => 'require',
+            'conteudo' => 'required',
+            'imagem' => 'required|image|mimes:jpge,jpg,png,webp|max:2048'
         ]);
 
         $noticia = new Noticia();
-        
+
         $noticia->titulo = $request->titulo;
         $noticia->resumo = $request->resumo;
         $noticia->conteudo = $request->titulo;
@@ -58,14 +58,13 @@ class NoticiaController extends Controller
         $noticia->ativo = $request->titulo;
         $noticia->usuario_id = Auth::user()->id;
 
-        if($request->hasFile('imagem')){
+        if ($request->hasFile('imagem')) {
             $noticia->imagem = $request->file('imagem')->store('noticias', 'public');
         }
 
         $noticia->save();
 
         return redirect()->route('admin.noticias.index');
-
     }
 
     /**
@@ -79,9 +78,9 @@ class NoticiaController extends Controller
     {
         $categorias = Categoria::orderBy('nome', 'ASC')->pluck('nome', 'id');
 
-        $noticia = Noticia::findOrFall($id);
+        $noticia = Noticia::findOrFail($id);
 
-        return view("admin.noticias.editar",[
+        return view("admin.noticias.editar", [
             'categorias' => $categorias,
             'noticia' => $noticia
         ]);
@@ -93,15 +92,15 @@ class NoticiaController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validade([
-             'categoria_id' => 'required',
-             'titulo' => 'required|min:10|max:255',
-             'resumo' => 'require',
-             'conteudo' => 'required',
-             'imagem' => 'nullable|image|mimes:jpge,jpg,png,webp|max:2048'
+            'categoria_id' => 'required',
+            'titulo' => 'required|min:10|max:255',
+            'resumo' => 'require',
+            'conteudo' => 'required',
+            'imagem' => 'nullable|image|mimes:jpge,jpg,png,webp|max:2048'
         ]);
 
         $noticia = Noticia::findOrFall($id);
-        
+
         $noticia->titulo = $request->titulo;
         $noticia->resumo = $request->resumo;
         $noticia->conteudo = $request->titulo;
@@ -109,10 +108,10 @@ class NoticiaController extends Controller
         $noticia->ativo = $request->titulo;
         $noticia->usuario_id = Auth::user()->id;
 
-        if($request->hasFile('imagem')){
-           if($noticia->imagem){
+        if ($request->hasFile('imagem')) {
+            if ($noticia->imagem) {
                 Storage::disk('public')->delete($noticia->imagem);
-           }
+            }
 
             $noticia->imagem = $request->file('imagem')->store('noticias', 'public');
         }
@@ -120,7 +119,6 @@ class NoticiaController extends Controller
         $noticia->save();
 
         return redirect()->route('admin.noticias.index');
-
     }
 
     /**
@@ -128,6 +126,8 @@ class NoticiaController extends Controller
      */
     public function destroy(string $id)
     {
-        return "Funcionou . . Deletou o registro!";
+        $noticia = Noticia::findOrFail($id);
+        $noticia->delete();
+        return redirect()->route('admin.noticias.index');
     }
 }
