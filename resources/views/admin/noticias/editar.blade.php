@@ -18,7 +18,9 @@
                 </div>
 
                 <div class="p-6 overflow-x-auto">
-                    <form action="#" method="post">
+                    <form action="{{ route('admin.categorias.atualizar', $noticia->id) }}" method="post">
+                        @method('put')
+                        @csrf
 
                         @include('admin.noticias._form');
 
